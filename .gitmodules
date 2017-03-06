@@ -1,0 +1,18 @@
+[submodule "EnablerConfigService"]
+	path = EnablerConfigService
+	url = https://github.com/symbiote-h2020/EnablerConfigService.git
+[submodule "EnablerLogic"]
+	path = EnablerLogic
+	url = https://github.com/symbiote-h2020/EnablerLogic.git
+[submodule "EnablerPlatformProxy"]
+	path = EnablerPlatformProxy
+	url = https://github.com/symbiote-h2020/EnablerPlatformProxy.git
+[submodule "EnablerResourceManager"]
+	path = EnablerResourceManager
+	url = https://github.com/symbiote-h2020/EnablerResourceManager.git
+[submodule "ZipkinService"]
+	path = ZipkinService
+	url = https://github.com/symbiote-h2020/ZipkinService.git
+[submodule "EurekaService"]
+	path = EurekaService
+	url = https://github.com/symbiote-h2020/EurekaService.git
