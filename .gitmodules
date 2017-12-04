@@ -16,3 +16,12 @@
 [submodule "EurekaService"]
 	path = EurekaService
 	url = https://github.com/symbiote-h2020/EurekaService.git
+[submodule "AuthenticationAuthorizationManager"]
+	path = AuthenticationAuthorizationManager
+	url = https://github.com/symbiote-h2020/AuthenticationAuthorizationManager.git
+[submodule "ResourceAccessProxy"]
+	path = ResourceAccessProxy
+	url = https://github.com/symbiote-h2020/ResourceAccessProxy.git
+[submodule "RegistrationHandler"]
+	path = RegistrationHandler
+	url = https://github.com/symbiote-h2020/RegistrationHandler.git
