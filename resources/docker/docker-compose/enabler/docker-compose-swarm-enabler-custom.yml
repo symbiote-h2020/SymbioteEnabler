@@ -1,0 +1,21 @@
+version: "3.5"
+
+x-environment:
+  &default-environment
+  # - JAVA_HTTP_PROXY=-Dhttp.proxyHost=146.124.225.18 -Dhttp.proxyPort=3128
+  # - JAVA_HTTPS_PROXY=-Dhttps.proxyHost=146.124.225.18 -Dhttps.proxyPort=3128
+  # - JAVA_SOCKS_PROXY=-DsocksProxyHost=146.124.225.18 -DsocksProxyPort=3128
+  # - JAVA_NON_PROXY_HOSTS=-Dhttp.nonProxyHosts=*symbiote-h2020.eu|symbiote-cloudconfig|symbiote-aam
+  - _JAVA_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -XX:+PrintFlagsFinal
+services:
+  symbiote-eli:
+    image: symbiote-eli
+    depends_on:
+      - symbiote-aam
+    deploy:
+     resources:
+       limits:
+         memory: 350M
+    networks: 
+      - symbiote
+    environment: *default-environment
