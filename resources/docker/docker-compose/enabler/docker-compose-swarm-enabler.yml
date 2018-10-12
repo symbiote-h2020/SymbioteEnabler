@@ -2,12 +2,114 @@ version: "3.5"
 
 x-environment:
   &default-environment
-  # - JAVA_HTTP_PROXY=-Dhttp.proxyHost=146.124.225.18 -Dhttp.proxyPort=3128
-  # - JAVA_HTTPS_PROXY=-Dhttps.proxyHost=146.124.225.18 -Dhttps.proxyPort=3128
-  # - JAVA_SOCKS_PROXY=-DsocksProxyHost=146.124.225.18 -DsocksProxyPort=3128
-  # - JAVA_NON_PROXY_HOSTS=-Dhttp.nonProxyHosts=*symbiote-h2020.eu|symbiote-cloudconfig|symbiote-aam
+  #- JAVA_HTTP_PROXY=-Dhttp.proxyHost=146.124.225.18 -Dhttp.proxyPort=3128
+  #- JAVA_HTTPS_PROXY=-Dhttps.proxyHost=146.124.225.18 -Dhttps.proxyPort=3128
+  #- JAVA_SOCKS_PROXY=-DsocksProxyHost=146.124.225.18 -DsocksProxyPort=3128
+  #- JAVA_NON_PROXY_HOSTS=-Dhttp.nonProxyHosts=*symbiote-h2020.eu|symbiote-enablerconfig|symbiote-aam
   - _JAVA_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -XX:+PrintFlagsFinal
 services:
+  symbiote-rabbitmq:
+    image: rabbitmq:3-alpine
+    networks:
+      - symbiote
+    ports:
+      - 127.0.0.1:5671:5671
+      - 127.0.0.1:5672:5672
+  symbiote-mongo:
+    image: mongo:3.6
+    networks:
+      - symbiote
+    volumes:
+      - symbiote-vol:/data/db
+  symbiote-enablerconfig:
+    image: symbioteh2020/symbiote-enablerconfig
+    deploy:
+      resources:
+        limits:
+          memory: 250M
+    networks:
+      - symbiote
+    secrets:
+      - source: enablerconfig
+        target: /home/application-custom.properties
+    environment: *default-environment
+  symbiote-aam:
+    image: symbioteh2020/symbiote-aam
+    depends_on:
+      - symbiote-mongo
+      - symbiote-rabbitmq
+      - symbiote-enablerconfig
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    ports:
+      - 127.0.0.1:8080:8080
+    networks:
+      - symbiote
+    secrets:
+      - source: aambootstrapconfig
+        target: /home/bootstrap.properties
+      - source: aamcertconfig
+        target: /home/cert.properties
+    environment: *default-environment
+  symbiote-eureka:
+    image: symbioteh2020/symbiote-eureka
+    depends_on:
+      - symbiote-enablerconfig
+    deploy:
+     resources:
+       limits:
+         memory: 350M
+    networks:
+      - symbiote
+    secrets:
+      - source: eurekabootstrapconfig
+        target: /home/bootstrap.properties
+  symbiote-rap:
+    image: symbioteh2020/symbiote-rap
+    depends_on:
+      - symbiote-aam
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    networks:
+      - symbiote
+    secrets:
+      - source: rapbootstrapconfig
+        target: /home/bootstrap.properties
+    environment: *default-environment
+  symbiote-rh:
+    image: symbioteh2020/symbiote-rh
+    depends_on:
+      - symbiote-aam
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    ports:
+      - 127.0.0.1:8001:8001
+    networks:
+      - symbiote
+    secrets:
+      - source: rhbootstrapconfig
+        target: /home/bootstrap.properties
+    environment: *default-environment
+  symbiote-monitoring:
+    image: symbioteh2020/symbiote-monitoring
+    depends_on:
+    - symbiote-aam
+    deploy:
+      resources:
+        limits:
+          memory: 350M
+    networks:
+      - symbiote
+    secrets:
+      - source: monitorbootstrapconfig
+        target: /home/bootstrap.properties
+    environment: *default-environment
   symbiote-erm:
     image: symbioteh2020/symbiote-erm
     depends_on:
@@ -37,8 +139,27 @@ services:
         target: /home/bootstrap.properties
     environment: *default-environment
 secrets:
+networks:
+  symbiote:
+    name: symbiote
+volumes:
+  symbiote-vol:
+secrets:
+  enablerconfig:
+    file: ./EnablerConfigProperties/application.properties
+  eurekabootstrapconfig:
+    file: ./Eureka/bootstrap.properties
+  aambootstrapconfig:
+    file: ./AuthenticationAuthorizationManager/bootstrap.properties
+  aamcertconfig:
+    file: ./AuthenticationAuthorizationManager/cert.properties
+  rapbootstrapconfig:
+    file: ./ResourceAccessProxy/bootstrap.properties
+  rhbootstrapconfig:
+    file: ./RegistrationHandler/bootstrap.properties
+  monitorbootstrapconfig:
+    file: ./Monitoring/bootstrap.properties
   ermconfig:
     file: ./EnablerResourceManager/bootstrap.properties
   eppconfig:
     file: ./EnablerPlatformProxy/bootstrap.properties
-    
