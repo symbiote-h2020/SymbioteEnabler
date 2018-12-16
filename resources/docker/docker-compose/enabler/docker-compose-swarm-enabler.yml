@@ -22,7 +22,7 @@ services:
     volumes:
       - symbiote-vol:/data/db
   symbiote-enablerconfig:
-    image: symbioteh2020/symbiote-enablerconfig
+    image: symbioteh2020/symbiote-enablerconfig:2.1.0
     deploy:
       resources:
         limits:
@@ -36,7 +36,7 @@ services:
         target: /home/application-custom.properties
     environment: *default-environment
   symbiote-aam:
-    image: symbioteh2020/symbiote-aam
+    image: symbioteh2020/symbiote-aam:5.0.9
     depends_on:
       - symbiote-mongo
       - symbiote-rabbitmq
@@ -56,7 +56,7 @@ services:
         target: /home/cert.properties
     environment: *default-environment
   symbiote-eureka:
-    image: symbioteh2020/symbiote-eureka
+    image: symbioteh2020/symbiote-eureka:3.0.1
     depends_on:
       - symbiote-enablerconfig
     deploy:
@@ -69,7 +69,7 @@ services:
       - source: eurekabootstrapconfig
         target: /home/bootstrap.properties
   symbiote-rap:
-    image: symbioteh2020/symbiote-rap
+    image: symbioteh2020/symbiote-rap:3.0.4
     depends_on:
       - symbiote-aam
     deploy:
@@ -83,7 +83,7 @@ services:
         target: /home/bootstrap.properties
     environment: *default-environment
   symbiote-rh:
-    image: symbioteh2020/symbiote-rh
+    image: symbioteh2020/symbiote-rh:3.0.6
     depends_on:
       - symbiote-aam
     deploy:
@@ -99,7 +99,7 @@ services:
         target: /home/bootstrap.properties
     environment: *default-environment
   symbiote-monitoring:
-    image: symbioteh2020/symbiote-monitoring
+    image: symbioteh2020/symbiote-monitoring:3.0.2
     depends_on:
     - symbiote-aam
     deploy:
@@ -113,7 +113,7 @@ services:
         target: /home/bootstrap.properties
     environment: *default-environment
   symbiote-erm:
-    image: symbioteh2020/symbiote-erm
+    image: symbioteh2020/symbiote-erm:2.0.5
     depends_on:
       - symbiote-aam
     deploy:
@@ -127,7 +127,7 @@ services:
         target: /home/bootstrap.properties
     environment: *default-environment
   symbiote-epp:
-    image: symbioteh2020/symbiote-epp
+    image: symbioteh2020/symbiote-epp:2.0.5
     depends_on:
       - symbiote-aam
     deploy:
