@@ -9,7 +9,7 @@ x-environment:
   - _JAVA_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -XX:+PrintFlagsFinal -DSPRING_BOOT_WAIT_FOR_SERVICES=symbiote-erm:8200
 services:
   symbiote-ele:
-    image: symbioteh2020/symbiote-enablerlogicexample
+    image: symbioteh2020/symbiote-enablerlogicexample:1.2.2
     depends_on:
       - symbiote-aam
     deploy:
